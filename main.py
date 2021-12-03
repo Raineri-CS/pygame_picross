@@ -1,13 +1,17 @@
-import pygame
 from pygame.constants import K_ESCAPE, KEYDOWN, KEYUP, MOUSEBUTTONUP
+# TODO remove
+from include.puzzle import PicrossPuzzle
+from include.sceneRenderer import Renderer
+import pygame
 
-pygame.init()
-windowSize = [1280, 720]
-window = pygame.display.set_mode(windowSize)
-pygame.display.set_caption("Pygame Picross")
+from include.gameCoordinator import GameCoordinator
+
 
 def main():
     EXIT = False
+    windowRenderer = Renderer()
+    # TODO remove
+    currentScreen = GameCoordinator(PicrossPuzzle(None, "1"))
     clock = pygame.time.Clock()
     while not EXIT:
         for event in pygame.event.get():
@@ -21,10 +25,11 @@ def main():
                     EXIT = True
             elif event.type == MOUSEBUTTONUP:
                 # TODO Do click stuff
-                print("lol")
+                currentScreen.draw(windowRenderer)
         clock.tick(30)
-        pygame.display.flip()
+        windowRenderer.swapBuffer()
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()

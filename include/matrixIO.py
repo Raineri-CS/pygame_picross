@@ -4,7 +4,8 @@ def readMatrix(filename):
     for line in file:
         resultLine = []
         for term in line:
-            resultLine.insert(term)
+            if term != "\n":
+                resultLine.append(term)
         resultMatrix.append(resultLine)
     file.close()
     return resultMatrix
