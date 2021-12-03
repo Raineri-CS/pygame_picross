@@ -1,0 +1,47 @@
+{
+    "options": {
+        "title": "Game Settings",
+        "video": {
+            "resolution": [
+                {
+                    "1920x1080": false,
+                    "1366x768": false,
+                    "1280x720": true,
+                    "640x480": false
+                }
+            ]
+        },
+        "audio": {
+            "music": [
+                {
+                    "0%": false,
+                    "10%": false,
+                    "20%": false,
+                    "30%": false,
+                    "40%": false,
+                    "50%": false,
+                    "60%": false,
+                    "70%": false,
+                    "80%": false,
+                    "90%": false,
+                    "100%": true
+                }
+            ],
+            "sfx": [
+                {
+                    "0%": false,
+                    "10%": false,
+                    "20%": false,
+                    "30%": false,
+                    "40%": false,
+                    "50%": false,
+                    "60%": false,
+                    "70%": false,
+                    "80%": false,
+                    "90%": false,
+                    "100%": true
+                }
+            ]
+        }
+    }
+}
