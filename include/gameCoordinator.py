@@ -1,5 +1,5 @@
 from .puzzle import PicrossPuzzle
-from .settings import COLOR_BACKGROUND, COLOR_FOREGROUND, COLOR_TEXT
+from .settings import COLOR_BACKGROUND, COLOR_FOREGROUND, COLOR_SELECTED, COLOR_TEXT
 import pygame.gfxdraw
 from .sceneRenderer import Renderer
 
@@ -21,6 +21,7 @@ class GameCoordinator():
         # Build a similarly dimensioned matrix
         self.xDimension = 0
         self.yDimension = 0
+        # TODO clicked boxes
         for line in solution.getSolution():
             self.yDimension += 1
             # TODO fix this so it accepts non square matrices
@@ -30,6 +31,7 @@ class GameCoordinator():
                 localLine.append(0)
             self.localMatrix.append(localLine)
         # Grid vertical space in px following (xMax - xMin) / termQty
+        self.coordMap = []
 
     def checkMatrixParity(self):
         for solutionLine, localLine in self.solution, self.localMatrix:
@@ -44,33 +46,56 @@ class GameCoordinator():
         localY = self.puzzleArea[1]
         localXdimension = 0
         localYdimension = 0
-        verticalSize =  int(
+        verticalSize = int(
             (self.puzzleArea[3] - self.puzzleArea[1]) / self.yDimension)
-        horizontalSize =int(
+        horizontalSize = int(
             (self.puzzleArea[2] - self.puzzleArea[0]) / self.xDimension)
         finalLocalX = localX + (self.xDimension*horizontalSize)
         finalLocalY = localY + (self.yDimension*verticalSize)
-
         while(True):
-            if(localXdimension >= self.xDimension and localYdimension >= self.yDimension):
-                # pygame.gfxdraw.line(windowRenderer.getWindow(
-                # ), localX, self.puzzleArea[0], localX, self.puzzleArea[3], COLOR_FOREGROUND)
+            if(localXdimension >= self.xDimension and localYdimension < self.yDimension):
+                localX = self.puzzleArea[0]
+                localXdimension = 0
+                localY += verticalSize
+                localYdimension += 1
+            if(localXdimension >= self.xDimension or localYdimension >= self.yDimension):
                 pygame.gfxdraw.line(windowRenderer.getWindow(
-                ), localX, self.puzzleArea[1], localX, finalLocalY, COLOR_FOREGROUND)
+                ), finalLocalX, self.puzzleArea[1], finalLocalX, finalLocalY, COLOR_FOREGROUND)
+                pygame.gfxdraw.line(windowRenderer.getWindow(
+                ), self.puzzleArea[0], localY, finalLocalX, localY, COLOR_FOREGROUND)
                 break
+            elif (self.localMatrix[localXdimension][localYdimension] == 1):
+                pygame.gfxdraw.line(windowRenderer.getWindow(
+                ), localX, localY, finalLocalX, localY, COLOR_FOREGROUND)
+                pygame.gfxdraw.line(windowRenderer.getWindow(
+                ), localX, localY, localX, finalLocalY, COLOR_FOREGROUND)
+                #  TODO test this
+                pygame.gfxdraw.rectangle(
+                    windowRenderer.getWindow(), (localX, localY, finalLocalX, finalLocalY), COLOR_SELECTED)
+                localX += horizontalSize
+                localXdimension += 1
             else:
-                if(localXdimension >= self.xDimension):
-                    localX = self.puzzleArea[0]
-                    localXdimension = 0
-                    localY += verticalSize
-                    localYdimension += 1
-                # FIXME o print ta errado
                 pygame.gfxdraw.line(windowRenderer.getWindow(
                 ), localX, localY, finalLocalX, localY, COLOR_FOREGROUND)
                 pygame.gfxdraw.line(windowRenderer.getWindow(
                 ), localX, localY, localX, finalLocalY, COLOR_FOREGROUND)
                 localX += horizontalSize
                 localXdimension += 1
-                # localY += self.verticalSize
+        pass
 
+    def slotFill(self, x: int, y: int):
+        if (self.puzzleArea[0] <= x and self.puzzleArea[2] >= x):
+            if (self.puzzleArea[1] <= y and self.puzzleArea[3] >= y):
+                verticalSize = int(
+                    (self.puzzleArea[3] - self.puzzleArea[1]) / self.yDimension)
+                horizontalSize = int(
+                    (self.puzzleArea[2] - self.puzzleArea[0]) / self.xDimension)
+                clickedSquare = (
+                    (int((x - self.puzzleArea[0])/horizontalSize)), int((y - self.puzzleArea[1])/verticalSize))
+                if (self.localMatrix[clickedSquare[0]][clickedSquare[1]] == 0):
+                    self.localMatrix[clickedSquare[0]][clickedSquare[1]] = 1
+                else:
+                    self.localMatrix[clickedSquare[0]][clickedSquare[1]] = 0
+                pass
+            pass
         pass

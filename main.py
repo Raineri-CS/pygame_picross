@@ -25,6 +25,7 @@ def main():
                     EXIT = True
             elif event.type == MOUSEBUTTONUP:
                 # TODO Do click stuff
+                currentScreen.slotFill(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1])
                 currentScreen.draw(windowRenderer)
         clock.tick(30)
         windowRenderer.swapBuffer()

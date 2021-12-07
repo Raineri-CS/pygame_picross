@@ -2,8 +2,11 @@ import json
 import os
 
 COLOR_BACKGROUND = (51, 153, 255)
-COLOR_TEXT = (200,200,200)
+COLOR_TEXT = (200, 200, 200)
 COLOR_FOREGROUND = (0, 102, 204)
+# TODO change this
+COLOR_SELECTED = (0, 0, 0)
+
 
 class GameSettings:
     def __init__(self) -> None:
