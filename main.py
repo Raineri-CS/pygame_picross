@@ -29,6 +29,9 @@ def main():
                 currentScreen.draw(windowRenderer)
         clock.tick(30)
         windowRenderer.swapBuffer()
+    # Destructors
+    if pygame.font.get_init():
+        pygame.font.quit()
     pygame.quit()
 
 

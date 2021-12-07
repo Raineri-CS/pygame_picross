@@ -1,6 +1,7 @@
 from .puzzle import PicrossPuzzle
 from .settings import COLOR_BACKGROUND, COLOR_FOREGROUND, COLOR_SELECTED, COLOR_TEXT
 import pygame.gfxdraw
+import pygame.font
 from .sceneRenderer import Renderer
 
 # Basically the scene with the gameplay stuff in it
@@ -30,8 +31,8 @@ class GameCoordinator():
             for term in line:
                 localLine.append(0)
             self.localMatrix.append(localLine)
-        # Grid vertical space in px following (xMax - xMin) / termQty
-        self.coordMap = []
+        self.lineHints = self.genLineHints()
+        self.columnHints = self.genColumnHints()
 
     def checkMatrixParity(self):
         for solutionLine, localLine in self.solution, self.localMatrix:
@@ -46,18 +47,40 @@ class GameCoordinator():
         localY = self.puzzleArea[1]
         localXdimension = 0
         localYdimension = 0
+        # Size between squares
         verticalSize = int(
             (self.puzzleArea[3] - self.puzzleArea[1]) / self.yDimension)
         horizontalSize = int(
             (self.puzzleArea[2] - self.puzzleArea[0]) / self.xDimension)
+        # Final coords
         finalLocalX = localX + (self.xDimension*horizontalSize)
         finalLocalY = localY + (self.yDimension*verticalSize)
+        backText = windowRenderer.getHintFont().render("Back?", True, COLOR_TEXT)
+        # Draws hints
+        # TODO
+        textX = self.workingArea[0] + (self.workingArea[0] * 0.8)
+        textY = self.workingArea[1] - (self.workingArea[1] * 0.2)
+        for hint in self.columnHints:
+            hintText = windowRenderer.getHintFont().render(hint, True, COLOR_TEXT)
+            windowRenderer.getWindow().blit(hintText, (textX, textY))
+            textX += horizontalSize
+            pass
+        textX = self.workingArea[0]
+        textY = self.workingArea[1] + (self.workingArea[1] * 0.8)
+        for hint in self.lineHints:
+            hintText = windowRenderer.getHintFont().render(hint, True, COLOR_TEXT)
+            windowRenderer.getWindow().blit(hintText, (textX, textY))
+            textY += verticalSize
+            pass
+        windowRenderer.getWindow().blit(backText, (20, 20))
         while(True):
+            # Draws from left to right, if the line is done, increment Y and continue drawing
             if(localXdimension >= self.xDimension and localYdimension < self.yDimension):
                 localX = self.puzzleArea[0]
                 localXdimension = 0
                 localY += verticalSize
                 localYdimension += 1
+            # If the draw is finished, do the last two lines of the grid
             if(localXdimension >= self.xDimension or localYdimension >= self.yDimension):
                 pygame.gfxdraw.line(windowRenderer.getWindow(
                 ), finalLocalX, self.puzzleArea[1], finalLocalX, finalLocalY, COLOR_FOREGROUND)
@@ -70,8 +93,10 @@ class GameCoordinator():
                 pygame.gfxdraw.line(windowRenderer.getWindow(
                 ), localX, localY, localX, finalLocalY, COLOR_FOREGROUND)
                 #  TODO test this
-                pygame.gfxdraw.rectangle(
-                    windowRenderer.getWindow(), (localX, localY, finalLocalX, finalLocalY), COLOR_SELECTED)
+                # pygame.gfxdraw.rectangle(
+                #     windowRenderer.getWindow(), (localX, localY, finalLocalX, finalLocalY), COLOR_SELECTED)
+                pygame.gfxdraw.filled_polygon(windowRenderer.getWindow(), [(
+                    localX, localY), (localX + horizontalSize, localY), (localX + horizontalSize, localY + verticalSize), (localX, localY + verticalSize)], COLOR_SELECTED)
                 localX += horizontalSize
                 localXdimension += 1
             else:
@@ -99,3 +124,39 @@ class GameCoordinator():
                 pass
             pass
         pass
+
+    def genLineHints(self) -> list:
+        stringList = []
+        for line in self.solution:
+            counter = 0
+            resultString = ""
+            for term in line:
+                if(term != '0'):
+                    counter += 1
+                else:
+                    if counter > 0:
+                        resultString += str(counter) + ' '
+                    counter = 0
+            if counter > 0:
+                resultString += str(counter) + ' '
+            stringList.append(resultString)
+        return stringList
+
+    def genColumnHints(self) -> list:
+        stringList = []
+
+        # NOTE: probable problem when doing non square matrices
+        for i in range(len(self.solution)):
+            counter = 0
+            resultString = ""
+            for j in range(len(self.solution[i])):
+                if(self.solution[j][i] != '0'):
+                    counter += 1
+                else:
+                    if counter > 0:
+                        resultString += str(counter) + ' '
+                    counter = 0
+            if counter > 0:
+                resultString += str(counter) + ' '
+            stringList.append(resultString)
+        return stringList
