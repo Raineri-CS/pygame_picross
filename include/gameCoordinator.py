@@ -2,7 +2,6 @@ from .puzzle import PicrossPuzzle
 from .settings import COLOR_BACKGROUND, COLOR_FOREGROUND, COLOR_SELECTED, COLOR_TEXT
 import pygame.gfxdraw
 import pygame.font
-from .sceneRenderer import Renderer
 
 # Basically the scene with the gameplay stuff in it
 # What does it do?
@@ -11,7 +10,6 @@ from .sceneRenderer import Renderer
 #   Stores the localGame matrix
 #   Goes back to the level select on back click
 #   Sets the map as completed if win
-
 
 class GameCoordinator():
     def __init__(self, solution: PicrossPuzzle) -> None:
@@ -34,14 +32,14 @@ class GameCoordinator():
         self.lineHints = self.genLineHints()
         self.columnHints = self.genColumnHints()
 
-    def checkMatrixParity(self):
+    def checkMatrixParity(self) -> bool:
         for solutionLine, localLine in self.solution, self.localMatrix:
             for solutionTerm, localTerm in solutionLine, localLine:
                 if(solutionTerm != localTerm):
                     return False
         return True
 
-    def draw(self, windowRenderer):
+    def draw(self, windowRenderer) -> None:
         windowRenderer.getWindow().fill(COLOR_BACKGROUND)
         localX = self.puzzleArea[0]
         localY = self.puzzleArea[1]
@@ -57,7 +55,6 @@ class GameCoordinator():
         finalLocalY = localY + (self.yDimension*verticalSize)
         backText = windowRenderer.getHintFont().render("Back?", True, COLOR_TEXT)
         # Draws hints
-        # TODO
         textX = self.workingArea[0] + (self.workingArea[0] * 0.8)
         textY = self.workingArea[1] - (self.workingArea[1] * 0.2)
         for hint in self.columnHints:
@@ -92,9 +89,6 @@ class GameCoordinator():
                 ), localX, localY, finalLocalX, localY, COLOR_FOREGROUND)
                 pygame.gfxdraw.line(windowRenderer.getWindow(
                 ), localX, localY, localX, finalLocalY, COLOR_FOREGROUND)
-                #  TODO test this
-                # pygame.gfxdraw.rectangle(
-                #     windowRenderer.getWindow(), (localX, localY, finalLocalX, finalLocalY), COLOR_SELECTED)
                 pygame.gfxdraw.filled_polygon(windowRenderer.getWindow(), [(
                     localX, localY), (localX + horizontalSize, localY), (localX + horizontalSize, localY + verticalSize), (localX, localY + verticalSize)], COLOR_SELECTED)
                 localX += horizontalSize

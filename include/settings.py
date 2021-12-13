@@ -8,6 +8,7 @@ COLOR_SELECTED = (0, 58, 116)
 FONT_SIZE_TEXT = 14
 FONT_SIZE_HINTS = 30
 
+
 class GameSettings:
     def __init__(self) -> None:
         dirname = os.path.dirname(__file__)
@@ -29,14 +30,25 @@ class GameSettings:
                 if(key.get(value) == True):
                     self.sfxLevel = (value[:-1])
         jsonfile.close()
+        # NOTE maybe this shouldnt be on this class?
+        dirname = os.path.dirname(__file__)
+        levelsDir = os.listdir(dirname[:-8] + '/resources/levels/')
+        # NOTE we have 2 options, cache every puzzle here as a Puzzle class, OR store the filenames for the levels, loading them on selection
+        self.levelList = []
+        for file in levelsDir:
+            self.levelList.append(file)
+            pass
 
-    def getResolution(self):
+    def getResolution(self) -> list:
         return self.resolution
 
-    def getMusicLevel(self):
-        return self.audioLevel
+    def getMusicLevel(self) -> int:
+        return int(self.audioLevel)
 
-    def getSfxLevel(self):
-        return self.sfxLevel
+    def getSfxLevel(self) -> int:
+        return int(self.sfxLevel)
+
+    def getLevelList(self) -> list:
+        return self.levelList
 
     # TODO settings write

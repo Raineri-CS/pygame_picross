@@ -1,4 +1,5 @@
 from pygame.constants import K_ESCAPE, KEYDOWN, KEYUP, MOUSEBUTTONUP
+from include.levelSelector import levelSelect
 # TODO remove
 from include.puzzle import PicrossPuzzle
 from include.sceneRenderer import Renderer
@@ -11,7 +12,8 @@ def main():
     EXIT = False
     windowRenderer = Renderer()
     # TODO remove
-    currentScreen = GameCoordinator(PicrossPuzzle(None, "1"))
+    # currentScreen = GameCoordinator(PicrossPuzzle(None, "1"))
+    currentScreen = levelSelect()
     clock = pygame.time.Clock()
     while not EXIT:
         for event in pygame.event.get():
@@ -25,7 +27,7 @@ def main():
                     EXIT = True
             elif event.type == MOUSEBUTTONUP:
                 # TODO Do click stuff
-                currentScreen.slotFill(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1])
+                # currentScreen.slotFill(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1])
                 currentScreen.draw(windowRenderer)
         clock.tick(30)
         windowRenderer.swapBuffer()
