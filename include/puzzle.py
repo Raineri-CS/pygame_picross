@@ -7,6 +7,7 @@ from .settings import GameSettings
 class PicrossPuzzle:
     def __init__(self, matrix: list = None, filename: str = None) -> None:
         if matrix:
+            self.fileName = ''
             self.solution = matrix
             # NOTE these are coordinates (xMin,yMin,xMax,yMax)
             # NOTE for 640x480 (4:3) there will be no bounding box
@@ -22,6 +23,7 @@ class PicrossPuzzle:
                 self.puzzleArea = (
                     int(self.workingArea[0] * 1.4), int(self.workingArea[1] * 1.4), int(self.workingArea[2]), int(self.workingArea[3]))
         elif filename:
+            self.fileName = filename
             self.solution = readMatrix(filename)
             localResolution = GameSettings().getResolution()
             if(int(localResolution[0]) / int(localResolution[1]) == 4/3):
@@ -48,3 +50,6 @@ class PicrossPuzzle:
 
     def getPuzzleArea(self):
         return self.puzzleArea
+
+    def getFileName(self) -> str:
+        return self.fileName

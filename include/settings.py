@@ -5,9 +5,9 @@ COLOR_BACKGROUND = (51, 153, 255)
 COLOR_TEXT = (200, 200, 200)
 COLOR_FOREGROUND = (0, 102, 204)
 COLOR_SELECTED = (0, 58, 116)
-FONT_SIZE_TEXT = 14
+FONT_SIZE_TEXT = 40
 FONT_SIZE_HINTS = 30
-
+SONG_OVER = 666
 
 class GameSettings:
     def __init__(self) -> None:
@@ -38,6 +38,19 @@ class GameSettings:
         for file in levelsDir:
             self.levelList.append(file)
             pass
+        self.completedLevelList = []
+        filename = dirname[:-8] + '/resources/save.json'
+        if not os.path.exists(filename):
+            os.mknod(filename)
+            saveFile = open(filename, 'w')
+            saveFile.write("{\n\t\"levels\": [\n\t]\n}")
+            saveFile.close()
+
+        saveFile = open(filename)
+        x = json.loads(saveFile.read())
+        for key in x['levels']:
+            for value in key:
+                self.completedLevelList.append(key)
 
     def getResolution(self) -> list:
         return self.resolution
@@ -50,5 +63,8 @@ class GameSettings:
 
     def getLevelList(self) -> list:
         return self.levelList
+
+    def getCompletedLevelList(self) -> list:
+        return self.completedLevelList
 
     # TODO settings write
